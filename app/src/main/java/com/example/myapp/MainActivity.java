@@ -1,10 +1,12 @@
 package com.example.myapp;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -12,7 +14,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity {
+public class   MainActivity extends AppCompatActivity {
 
     Button button;
     EditText editTextMin, editTextMax;
@@ -45,5 +47,17 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState, @NonNull PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putString("sorteado", textViewResultado.getText().toString());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstaceState) {
+        super.onRestoreInstanceState(savedInstaceState);
+        textViewResultado.setText(savedInstaceState.getString("sorteado"));
     }
 }
