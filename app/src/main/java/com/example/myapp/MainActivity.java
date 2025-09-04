@@ -1,46 +1,39 @@
 package com.example.myapp;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import java.util.Random;
 
-public class   MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
     Button button;
-    EditText editTextMin, editTextMax;
-    TextView textViewResultado;
+    EditText edPeso, edAltura;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //Associar os objetos declarados e inicializados apartir do xml com variaveis locais
+
         button = findViewById(R.id.button);
-        editTextMin = findViewById(R.id.edMin);
-        editTextMax = findViewById(R.id.edMax);
-        textViewResultado = findViewById(R.id.tvResult);
+        edPeso = findViewById(R.id.editPeso);
+        edAltura = findViewById(R.id.editAltura);
 
         button.setOnClickListener(v -> {
-            int min = Integer.parseInt(editTextMin.getText().toString());
-            int max = Integer.parseInt(editTextMax.getText().toString());
-            if(min >= max ) {
-                textViewResultado.setText("Valores inválidos!");
-            } else {
-                int sorteado = 0;
+            Intent intent = new Intent(this, IMCResultado.class);
+            float peso = Float.parseFloat(edPeso.getText().toString());
+            float altura = Float.parseFloat(edAltura.getText().toString());
 
-                sorteado = (int) (Math.random() * (max - min) + min);
-                textViewResultado.setText(Integer.toString(sorteado));
-            }
+            intent.putExtra("peso", peso);
+            intent.putExtra("altura", altura);
+
+            startActivity(intent);
         });
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -49,15 +42,4 @@ public class   MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState, @NonNull PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
-        outState.putString("sorteado", textViewResultado.getText().toString());
-    }
-
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstaceState) {
-        super.onRestoreInstanceState(savedInstaceState);
-        textViewResultado.setText(savedInstaceState.getString("sorteado"));
-    }
 }
