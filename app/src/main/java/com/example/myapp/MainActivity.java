@@ -1,31 +1,41 @@
 package com.example.myapp;
 
-import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.EditText;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
-    TextView tv;
 
-    int i = 0;
-    @SuppressLint("MissingInflatedId")
+    Button button;
+    EditText edPeso, edAltura, edNome;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        tv = findViewById(R.id.textview);
-        tv.setText(Integer.toString(i));
 
-        tv.setOnClickListener(v -> {
-            i++;
-            tv.setText(Integer.toString(i));
+        edNome = findViewById(R.id.textNome);
+        button = findViewById(R.id.button);
+        edPeso = findViewById(R.id.editPeso);
+        edAltura = findViewById(R.id.editAltura);
+
+        button.setOnClickListener(v -> {
+            Intent intent = new Intent(this, IMCResultado.class);
+            float peso = Float.parseFloat(edPeso.getText().toString());
+            float altura = Float.parseFloat(edAltura.getText().toString());
+            String nome = String.valueOf(edNome.getText());
+
+            intent.putExtra("peso", peso);
+            intent.putExtra("altura", altura);
+            intent.putExtra("nome", nome);
+
+            startActivity(intent);
         });
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -33,4 +43,5 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
     }
+
 }
