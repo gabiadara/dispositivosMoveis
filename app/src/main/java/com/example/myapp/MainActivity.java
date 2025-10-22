@@ -1,11 +1,12 @@
 package com.example.myapp;
 
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
+import android.util.Log;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,62 +15,33 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
+    PackageManager pm;
     ListView listView;
-    ArrayList<String> nomes;
-    EditText editText;
-    Button button;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        listView = findViewById(R.id.listView);
-        editText = findViewById(R.id.editText);
-        button = findViewById(R.id.button);
+        listView =findViewById(R.id.listView);
 
-        nomes = new ArrayList<>() { {
-            add("Apple");
-            add("Banana");
-            add("Cherry");
-        }};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1,
-                android.R.id.text1,
-                nomes
-        );
+        //Recupera  gerenciador de pacotes
+        pm=getPackageManager();
 
-        button.setOnClickListener( v -> {
-            String text = editText.getText().toString();
-            nomes.add(text);
-            adapter.notifyDataSetChanged();
-        });
 
-        listView.setOnItemClickListener(
-                (parent, view, position, id) -> {
-                    Toast.makeText(
-                            getApplicationContext(),
-                            "Elemento clicado: " + nomes.get(position),
-                            Toast.LENGTH_SHORT).show();
-                });
+        ArrayList<ApplicationInfo> apps =new ArrayList<>();// = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+        Intent iquery = new Intent(Intent.ACTION_MAIN, null);
+        iquery.addCategory(Intent.CATEGORY_LAUNCHER);
 
-        listView.setOnItemLongClickListener(
-                ((parent, view, position, id) -> {
-                    nomes.remove(nomes.get(position));
-                    adapter.notifyDataSetChanged();
-                    return true;
-                })
-        );
+        List<ResolveInfo> listResolvInfo=pm.queryIntentActivities(iquery,PackageManager.GET_META_DATA);
+        for (ResolveInfo resolveInfo : listResolvInfo) {
+            apps.add(resolveInfo.activityInfo.applicationInfo);
+        }
+        AppAdapter adapter = new AppAdapter(this, R.layout.app, apps);
 
         listView.setAdapter(adapter);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
     }
 }
