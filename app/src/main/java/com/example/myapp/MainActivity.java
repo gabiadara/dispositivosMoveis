@@ -51,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
                     .setBottomSpace(12) // set a bottom space between the last slidebar and buttons.
                     .show();
         });
+        findViewById(R.id.buttonLimpar).setOnClickListener( v -> {
+            simplePaint.clean();
+        });
 
     }
     public void setColor(ColorEnvelope envelope) {

@@ -70,4 +70,9 @@ public class SimplePaint extends View {
     public void setColor(int color) {
         mPaint.setColor(color);
     }
+
+    public void clean() {
+        mPath.reset();
+        invalidate();
+    }
 }
