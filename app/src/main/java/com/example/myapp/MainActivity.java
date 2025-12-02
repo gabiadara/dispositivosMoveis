@@ -2,6 +2,7 @@ package com.example.myapp;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener;
 public class MainActivity extends AppCompatActivity {
 
     SimplePaint simplePaint;
+    Button btnCirculo, btnRetangulo, btnCamadas, btnColor, btnLimpar, btnLivre;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +29,30 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
         simplePaint = findViewById(R.id.simplePaint);
-        findViewById(R.id.button).setOnClickListener(v-> {
+        btnCirculo = findViewById(R.id.buttonCirculo);
+        btnRetangulo = findViewById(R.id.buttonRetangulo);
+        btnCamadas = findViewById(R.id.buttonCamadas);
+        btnColor = findViewById(R.id.buttonColor);
+        btnLimpar = findViewById(R.id.buttonLimpar);
+        btnLivre = findViewById(R.id.buttonLivre);
+
+        btnLivre.setOnClickListener(v -> {
+            simplePaint.setShapeType(SimplePaint.ShapeType.TRACO_LIVRE);
+        });
+
+        btnRetangulo.setOnClickListener(v -> {
+            simplePaint.setShapeType(SimplePaint.ShapeType.RETANGULO);
+        });
+
+        btnCirculo.setOnClickListener(v -> {
+            simplePaint.setShapeType(SimplePaint.ShapeType.CIRCULO);
+        });
+
+        btnCamadas.setOnClickListener(v -> {
+            simplePaint.undo();
+        });
+
+        btnColor.setOnClickListener(v-> {
             new ColorPickerDialog.Builder(this)
                     .setTitle("ColorPicker Dialog")
                     .setPreferenceName("MyColorPickerDialog")
@@ -51,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                     .setBottomSpace(12) // set a bottom space between the last slidebar and buttons.
                     .show();
         });
-        findViewById(R.id.buttonLimpar).setOnClickListener( v -> {
+        btnLimpar.setOnClickListener( v -> {
             simplePaint.clean();
         });
 

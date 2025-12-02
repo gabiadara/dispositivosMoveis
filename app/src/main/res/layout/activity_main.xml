@@ -19,7 +19,7 @@
             android:gravity="center_horizontal">
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/buttonColor"
                 android:layout_width="wrap_content"
                 android:backgroundTint="@color/pink"
                 android:layout_height="60dp"
@@ -27,7 +27,7 @@
                 android:layout_marginEnd="8dp" />
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/buttonLivre"
                 android:layout_width="wrap_content"
                 android:backgroundTint="@color/pink"
                 android:layout_height="60dp"
@@ -35,7 +35,7 @@
                 android:layout_marginEnd="8dp" />
 
             <Button
-                android:id="@+id/button3"
+                android:id="@+id/buttonRetangulo"
                 android:layout_width="wrap_content"
                 android:backgroundTint="@color/pink"
                 android:layout_height="60dp"
@@ -51,7 +51,7 @@
             android:gravity="center_horizontal">
 
             <Button
-                android:id="@+id/button4"
+                android:id="@+id/buttonCirculo"
                 android:layout_width="wrap_content"
                 android:backgroundTint="@color/pink"
                 android:layout_height="60dp"
@@ -59,7 +59,7 @@
                 android:layout_marginEnd="8dp" />
 
             <Button
-                android:id="@+id/button5"
+                android:id="@+id/buttonCamadas"
                 android:layout_width="wrap_content"
                 android:backgroundTint="@color/pink"
                 android:layout_height="60dp"

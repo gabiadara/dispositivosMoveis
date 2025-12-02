@@ -12,9 +12,34 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+
 public class SimplePaint extends View {
-    Paint mPaint;
-    Path mPath;
+    public enum ShapeType {
+        TRACO_LIVRE, RETANGULO, CIRCULO;
+    }
+
+    private Paint mPaint;
+    private Path mPath;
+    private ShapeType currentShape = ShapeType.TRACO_LIVRE;
+    private float startX, startY;
+    private final ArrayList<DrawShape> shapes = new ArrayList<>();
+
+    private static class DrawShape {
+        ShapeType shapeType;
+        Path path;
+        float x, y, endX, endY;
+        int color;
+        DrawShape(ShapeType shapeType, Path path, float x, float y, float endX, float endY, int color) {
+            this.shapeType = shapeType;
+            this.path = path;
+            this.x = x;
+            this.y = y;
+            this.endX = endX;
+            this.endY = endY;
+            this.color = color;
+        }
+    }
 
     public void setup() {
         mPaint = new Paint();
@@ -48,31 +73,83 @@ public class SimplePaint extends View {
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawPath(mPath, mPaint);
+        for (DrawShape drawShape : shapes) {
+            Paint paint = new Paint(mPaint);
+            paint.setColor(drawShape.color);
+            switch (drawShape.shapeType) {
+                case TRACO_LIVRE:
+                    canvas.drawPath(drawShape.path, paint);
+                    break;
+                case RETANGULO:
+                    canvas.drawRect(drawShape.x, drawShape.y, drawShape.endX, drawShape.endY, paint);
+                    break;
+                case CIRCULO:
+                    float raio = (float) Math.hypot(drawShape.endX - drawShape.x, drawShape.endY - drawShape.y);
+                    canvas.drawCircle(drawShape.x, drawShape.y, raio, paint);
+                    break;
+            }
+        }
+        if (currentShape == ShapeType.TRACO_LIVRE) {
+            canvas.drawPath(mPath, mPaint);
+        }
+
     }
 
     public boolean onTouchEvent(MotionEvent event) {
+        float x = event.getX();
+        float y = event.getY();
+
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                mPath.moveTo(event.getX(), event.getY());
+                startX = x;
+                startY = y;
+                if (currentShape == ShapeType.TRACO_LIVRE) {
+                    mPath.moveTo(x, y);
+                }
                 return true;
             case MotionEvent.ACTION_MOVE:
-                mPath.lineTo(event.getX(), event.getY());
+                if (currentShape == ShapeType.TRACO_LIVRE) {
+                    mPath.lineTo(x, y);
+                }
+                invalidate();
                 return true;
             case MotionEvent.ACTION_UP:
-                break;
-            default:
-                return false;
+                switch (currentShape) {
+                    case TRACO_LIVRE:
+                        shapes.add(new DrawShape(ShapeType.TRACO_LIVRE, new Path(mPath), 0, 0, 0, 0, mPaint.getColor()));
+                        mPath.reset();
+                        break;
+                    case RETANGULO:
+                        shapes.add(new DrawShape(ShapeType.RETANGULO, null, startX, startY, x, y, mPaint.getColor()));
+                        break;
+                    case CIRCULO:
+                        shapes.add(new DrawShape(ShapeType.CIRCULO, null, startX, startY, x, y, mPaint.getColor()));
+                        break;
+                }
+                invalidate();
+                return true;
         }
-        invalidate();
-        return true;
+        return false;
     }
+
+    public void setShapeType(ShapeType shapeType) {
+        this.currentShape = shapeType;
+    }
+
     public void setColor(int color) {
         mPaint.setColor(color);
     }
 
     public void clean() {
+        shapes.clear();
         mPath.reset();
         invalidate();
+    }
+
+    public void undo() {
+        if (!shapes.isEmpty()) {
+            shapes.remove(shapes.size() - 1);
+            invalidate();
+        }
     }
 }
